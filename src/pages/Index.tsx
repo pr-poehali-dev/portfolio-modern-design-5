@@ -142,12 +142,13 @@ const Hero = () => (
         </h1>
         {/* Фото */}
         <div className="shrink-0 fade-up stagger-3">
-          <div className="relative w-48 h-60 lg:w-56 lg:h-72 rounded-3xl overflow-hidden bg-[#EEECEA] border-2 border-dashed border-[#111110]/20 flex flex-col items-center justify-center gap-3 group cursor-pointer">
-            <Icon name="Camera" size={28} className="text-[#8A8882]" />
-            <p className="font-mono text-[10px] text-[#8A8882] tracking-widest uppercase text-center px-4">Добавить фото</p>
-            <div className="absolute inset-0 bg-[#9EF01A]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="relative w-48 h-60 lg:w-56 lg:h-72 rounded-3xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(17,17,16,0.35)]">
+            <img
+              src="https://cdn.poehali.dev/projects/0d1b8ee1-ad5c-4375-90b1-bbdebd5cdb0f/bucket/1f3591b8-bc4f-4dd9-9d60-0629b48ba389.jpg"
+              alt="Даниил Исаков"
+              className="w-full h-full object-cover object-[center_20%]"
+            />
           </div>
-          <p className="font-mono text-[10px] text-[#8A8882] mt-2 text-center tracking-wide">↑ скажи мне ссылку на фото</p>
         </div>
       </div>
 
