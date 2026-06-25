@@ -1,236 +1,252 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from '@/components/ui/icon';
 
+/* ─── Data ─────────────────────────────────────────────── */
 const NAV = [
   { label: 'Обо мне', href: '#about' },
-  { label: 'Стек', href: '#stack' },
-  { label: 'Портфолио', href: '#portfolio' },
+  { label: 'Работы', href: '#portfolio' },
   { label: 'Услуги', href: '#services' },
   { label: 'Контакты', href: '#contacts' },
 ];
 
-const STATS = [
-  { value: '1', label: 'год на фрилансе' },
-  { value: '50+', label: 'выполненных заказов' },
-  { value: '4', label: 'площадки и постоянные клиенты' },
-];
-
-const STACK = [
-  { tag: '// frontend', title: 'Frontend', items: ['HTML', 'CSS / SCSS', 'JavaScript', 'Vue.js'] },
-  { tag: '// cms & backend', title: 'CMS & Backend', items: ['WordPress', 'PHP', 'Laravel', 'Symfony', 'Tilda'] },
-  { tag: '// e-commerce', title: 'E-commerce и инструменты', items: ['WooCommerce', 'Кастомные темы', 'Nuxt.js'] },
-];
-
 const PROJECTS = [
   {
+    num: '01',
+    cat: 'Интернет-магазин',
+    name: 'ChargerOne',
+    desc: 'Гипермаркет зарядных станций для электромобилей — каталог, фильтры, WooCommerce',
+    tags: ['WordPress', 'WooCommerce', 'PHP'],
     img: 'https://cdn.poehali.dev/projects/0d1b8ee1-ad5c-4375-90b1-bbdebd5cdb0f/files/722ddacb-18c5-43fb-aef4-8bf76639ff63.jpg',
-    cat: 'Интернет-магазин', name: 'ChargerOne', url: 'chargerone.ru',
-    tags: ['WordPress', 'WooCommerce', 'Кастомная тема'],
+    span: 'lg:col-span-2',
   },
   {
+    num: '02',
+    cat: 'Ветеринарная клиника',
+    name: 'EVC',
+    desc: 'Многостраничный сайт с записью на приём и описанием услуг клиники',
+    tags: ['WordPress', 'Кастомная тема'],
     img: 'https://cdn.poehali.dev/projects/0d1b8ee1-ad5c-4375-90b1-bbdebd5cdb0f/files/48680e25-39f6-4203-9f6c-f5d18552027f.jpg',
-    cat: 'Ветклиника', name: 'EVC · Ветеринарная клиника', url: 'evc.ru',
-    tags: ['WordPress', 'Многостраничный', 'Кастомная тема'],
+    span: 'lg:col-span-1',
   },
   {
+    num: '03',
+    cat: 'Лендинг',
+    name: 'АКПП-Сервис',
+    desc: 'Конверсионный лендинг для автосервиса с кнопкой бесплатной диагностики',
+    tags: ['Tilda', 'Лендинг'],
     img: 'https://cdn.poehali.dev/projects/0d1b8ee1-ad5c-4375-90b1-bbdebd5cdb0f/files/a132036d-7b8d-4468-9087-d198e98994e6.jpg',
-    cat: 'Лендинг · Автосервис', name: 'Диагностика АКПП', url: 'akpp-service.ru',
-    tags: ['Tilda', 'Лендинг', 'Анимации'],
+    span: 'lg:col-span-1',
   },
   {
+    num: '04',
+    cat: 'Корпоративный сайт',
+    name: 'Formatta',
+    desc: 'Сайт консалтинговой компании: кастомный дизайн, CMS, мультиязычность',
+    tags: ['Laravel', 'Nuxt.js'],
     img: 'https://cdn.poehali.dev/projects/0d1b8ee1-ad5c-4375-90b1-bbdebd5cdb0f/files/fa0ca532-1f2b-4bc7-9292-49c7ffec007c.jpg',
-    cat: 'Корпоративный сайт', name: 'Formatta · Консалтинг', url: 'formatta.ru',
-    tags: ['Laravel', 'Корпоративный', 'Кастомная тема'],
+    span: 'lg:col-span-2',
   },
 ];
+
+const STACK_ITEMS = ['HTML', 'CSS / SCSS', 'JavaScript', 'Vue.js', 'WordPress', 'PHP', 'WooCommerce', 'Laravel', 'Tilda', 'Symfony', 'Nuxt.js', 'Кастомные темы'];
 
 const SERVICES = [
-  { icon: 'LayoutTemplate', title: 'Лендинги', desc: 'Продающие одностраничники под запуск рекламы и сбор заявок.' },
-  { icon: 'Globe', title: 'Корпоративные сайты', desc: 'Многостраничные сайты, которые внушают доверие и работают на бренд.' },
-  { icon: 'ShoppingCart', title: 'Интернет-магазины', desc: 'Каталог, корзина, оплата — магазины «под ключ» на WooCommerce.' },
-  { icon: 'Wrench', title: 'Доработка сайтов', desc: 'Правки вёрстки, новый функционал и ускорение существующих проектов.' },
+  { num: '01', title: 'Лендинги', desc: 'Продающие одностраничники под запуск рекламы и сбор заявок. Быстро, чисто, в срок.' },
+  { num: '02', title: 'Корпоративные сайты', desc: 'Многостраничные сайты, которые работают на бренд и внушают доверие клиентам.' },
+  { num: '03', title: 'Интернет-магазины', desc: 'Полноценный магазин «под ключ»: каталог, фильтры, корзина, оплата, доставка.' },
+  { num: '04', title: 'Доработка сайтов', desc: 'Правки вёрстки, новые блоки, ускорение — возьму любой существующий проект.' },
 ];
 
-const ADVANTAGES = [
-  { icon: 'Clock', title: 'В срок', desc: 'Соблюдаю дедлайны и держу вас в курсе по каждому этапу.' },
-  { icon: 'Code2', title: 'Чистый код', desc: 'Аккуратная вёрстка, которую удобно поддерживать дальше.' },
-  { icon: 'Smartphone', title: 'Адаптив', desc: 'Сайт одинаково хорошо смотрится на телефоне и десктопе.' },
-  { icon: 'MessageSquare', title: 'На связи', desc: 'Отвечаю быстро и говорю простым языком, без сложных терминов.' },
-];
+/* ─── Custom cursor ─────────────────────────────────────── */
+const Cursor = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const move = (e: MouseEvent) => {
+      el.style.left = e.clientX + 'px';
+      el.style.top  = e.clientY + 'px';
+    };
+    window.addEventListener('mousemove', move);
+    return () => window.removeEventListener('mousemove', move);
+  }, []);
+  return <div id="cursor" ref={ref} />;
+};
 
-const REVIEWS = [
-  { name: 'Дмитрий К.', role: 'ChargerOne', text: 'Артём собрал магазин под ключ и помог с интеграциями. Всё чётко, в срок, рекомендую.' },
-  { name: 'Ольга М.', role: 'Ветклиника EVC', text: 'Сделал красивый и удобный сайт. Заявок стало заметно больше, клиенты хвалят дизайн.' },
-  { name: 'Сергей П.', role: 'Автосервис', text: 'Быстро доработал лендинг и поднял конверсию. Приятно работать с человеком, который вникает.' },
-];
-
+/* ─── Header ────────────────────────────────────────────── */
 const Header = () => {
+  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
   return (
-    <header className="fixed top-3 inset-x-0 z-50 px-4">
-      <div className="container">
-        <div className="flex items-center justify-between gap-4 bg-white/90 backdrop-blur-md border border-slate-200/70 rounded-2xl shadow-[0_10px_40px_-15px_rgba(16,31,60,0.25)] pl-5 pr-3 py-2.5">
-          <a href="#top" className="flex items-center gap-3">
-            <span className="grid place-items-center w-9 h-9 rounded-xl bg-navy text-white font-display font-bold text-sm">АЗ</span>
-            <span className="font-display font-bold text-navy text-[15px] tracking-tight">Артём Зубов</span>
-          </a>
-          <nav className="hidden md:flex items-center gap-7">
-            {NAV.map((n) => (
-              <a key={n.href} href={n.href} className="text-[15px] font-medium text-slate-600 hover:text-navy transition-colors">{n.label}</a>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <div className="hidden sm:flex items-center bg-slate-100 rounded-lg p-0.5 text-xs font-semibold">
-              <button className="px-3 py-1.5 rounded-md bg-navy text-white">RU</button>
-              <button className="px-3 py-1.5 rounded-md text-slate-500">EN</button>
-            </div>
-            <button onClick={() => setOpen(!open)} className="md:hidden grid place-items-center w-10 h-10 rounded-lg text-navy">
-              <Icon name={open ? 'X' : 'Menu'} size={22} />
-            </button>
-          </div>
-        </div>
-        {open && (
-          <div className="md:hidden mt-2 bg-white border border-slate-200 rounded-2xl shadow-lg p-4 flex flex-col gap-1 animate-fade-in">
-            {NAV.map((n) => (
-              <a key={n.href} href={n.href} onClick={() => setOpen(false)} className="px-3 py-2.5 rounded-lg text-slate-700 font-medium hover:bg-slate-100">{n.label}</a>
-            ))}
-          </div>
-        )}
+    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#F7F6F3]/95 backdrop-blur-sm border-b border-[#111110]/8' : ''}`}>
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
+        <a href="#top" className="font-display text-sm font-bold tracking-tight text-[#111110]">
+          АЗ<span className="text-[#9EF01A]">.</span>
+        </a>
+        <nav className="hidden md:flex items-center gap-9">
+          {NAV.map(n => (
+            <a key={n.href} href={n.href} className="line-hover text-sm font-medium text-[#8A8882] hover:text-[#111110] transition-colors">
+              {n.label}
+            </a>
+          ))}
+        </nav>
+        <a href="#contacts" className="hidden md:inline-flex items-center gap-2 bg-[#111110] text-[#F7F6F3] text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#333] transition-colors">
+          Обсудить проект <Icon name="ArrowUpRight" size={14} />
+        </a>
+        <button onClick={() => setOpen(!open)} className="md:hidden text-[#111110]">
+          <Icon name={open ? 'X' : 'Menu'} size={22} />
+        </button>
       </div>
+      {open && (
+        <div className="md:hidden bg-[#F7F6F3] border-t border-[#111110]/10 px-6 py-6 flex flex-col gap-4 fade-in">
+          {NAV.map(n => (
+            <a key={n.href} href={n.href} onClick={() => setOpen(false)} className="text-lg font-medium text-[#111110]">{n.label}</a>
+          ))}
+          <a href="#contacts" className="mt-2 text-center bg-[#111110] text-[#F7F6F3] font-semibold px-5 py-3 rounded-full">Обсудить проект</a>
+        </div>
+      )}
     </header>
   );
 };
 
-const SectionTitle = ({ num, children, light = false }: { num: string; children: string; light?: boolean }) => (
-  <div className="flex items-center gap-5">
-    <span className="font-mono text-sm text-brand">{num}</span>
-    <h2 className={`font-display font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight ${light ? 'text-white' : 'text-navy'}`}>{children}</h2>
-    <span className={`hidden sm:block flex-1 h-px ${light ? 'bg-white/15' : 'bg-slate-200'}`} />
-  </div>
-);
-
+/* ─── Hero ──────────────────────────────────────────────── */
 const Hero = () => (
-  <section id="top" className="relative pt-36 md:pt-44 pb-16 md:pb-24 overflow-hidden">
-    <div className="container">
-      <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div className="animate-fade-up">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="w-8 h-px bg-navy" />
-            <span className="font-mono text-xs tracking-[0.2em] text-brand uppercase">Frontend-разработчик · Фриланс</span>
+  <section id="top" className="min-h-screen flex flex-col justify-between pt-16">
+    <div className="max-w-6xl mx-auto px-6 flex-1 flex flex-col justify-center py-20">
+      <div className="flex items-start justify-between mb-16 gap-6 flex-wrap">
+        <p className="font-mono text-xs tracking-[0.2em] text-[#8A8882] uppercase fade-up stagger-1">
+          Frontend-разработчик · Фриланс
+        </p>
+        <div className="flex gap-8 text-right fade-up stagger-2">
+          <div>
+            <p className="font-display text-3xl font-bold text-[#111110]">50+</p>
+            <p className="text-xs text-[#8A8882] mt-0.5">заказов</p>
           </div>
-          <h1 className="font-display font-black text-navy leading-[0.95] text-6xl sm:text-7xl md:text-8xl tracking-tight">
-            Зубов<br />Артём
-          </h1>
-          <p className="mt-7 text-lg sm:text-xl text-slate-500 max-w-md leading-relaxed">
-            Создаю и дорабатываю сайты, которые работают на бизнес — от лендингов до интернет-магазинов.
-          </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <a href="#portfolio" className="group inline-flex items-center gap-3 bg-navy text-white font-semibold px-7 py-4 rounded-xl hover:bg-navy-light transition-colors">
-              Смотреть портфолио
-              <Icon name="ArrowRight" size={18} className="group-hover:translate-x-1 transition-transform" />
-            </a>
-            <a href="#contacts" className="inline-flex items-center gap-2 bg-white border border-slate-200 text-navy font-semibold px-7 py-4 rounded-xl hover:border-navy transition-colors">
-              Связаться
-            </a>
+          <div>
+            <p className="font-display text-3xl font-bold text-[#111110]">1</p>
+            <p className="text-xs text-[#8A8882] mt-0.5">год опыта</p>
+          </div>
+          <div>
+            <p className="font-display text-3xl font-bold text-[#111110]">4</p>
+            <p className="text-xs text-[#8A8882] mt-0.5">площадки</p>
           </div>
         </div>
-        <div className="relative animate-scale-in">
-          <div className="relative rounded-3xl overflow-hidden shadow-[0_30px_80px_-30px_rgba(16,31,60,0.5)]">
-            <img src="https://cdn.poehali.dev/projects/0d1b8ee1-ad5c-4375-90b1-bbdebd5cdb0f/bucket/414e2441-beda-4a42-8ba2-00bcba6dba83.png" alt="Артём Зубов" className="w-full h-[460px] sm:h-[560px] object-cover object-top" />
-          </div>
-          <div className="absolute bottom-6 left-6 bg-white rounded-xl px-5 py-3 shadow-lg">
-            <p className="font-mono text-[11px] text-slate-400 uppercase tracking-wide">Локация</p>
-            <p className="font-display font-bold text-navy text-sm">Россия · удалённо</p>
-          </div>
+      </div>
+
+      <h1 className="font-display font-black text-[#111110] leading-none tracking-tighter fade-up stagger-2"
+          style={{ fontSize: 'clamp(3.5rem, 12vw, 10rem)' }}>
+        Артём<br />
+        <span className="text-[#EEECEA] [-webkit-text-stroke:2px_#111110]">Зубов</span>
+      </h1>
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8 mt-14 fade-up stagger-3">
+        <p className="max-w-sm text-lg text-[#8A8882] leading-relaxed">
+          Создаю сайты, которые работают на бизнес —<br />
+          от лендингов до интернет-магазинов.
+        </p>
+        <div className="flex gap-3">
+          <a href="#portfolio" className="group inline-flex items-center gap-2 bg-[#9EF01A] text-[#111110] font-bold text-sm px-6 py-3.5 rounded-full hover:scale-105 transition-transform">
+            Смотреть работы <Icon name="ArrowRight" size={16} className="group-hover:translate-x-1 transition-transform" />
+          </a>
+          <a href="#contacts" className="inline-flex items-center gap-2 border border-[#111110]/20 text-[#111110] font-semibold text-sm px-6 py-3.5 rounded-full hover:border-[#111110] transition-colors">
+            Написать
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div className="border-t border-[#111110]/10 py-5 overflow-hidden">
+      <div className="flex overflow-hidden">
+        <div className="marquee-track">
+          {[...STACK_ITEMS, ...STACK_ITEMS].map((s, i) => (
+            <span key={i} className="font-mono text-xs text-[#8A8882] tracking-widest uppercase mx-8 shrink-0">{s}</span>
+          ))}
         </div>
       </div>
     </div>
   </section>
 );
 
-const Stats = () => (
-  <section className="bg-navy-deep text-white">
-    <div className="container">
-      <div className="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
-        {STATS.map((s) => (
-          <div key={s.label} className="py-12 sm:py-16 sm:px-10 first:sm:pl-0">
-            <p className="font-display font-extrabold text-6xl md:text-7xl text-slate-300">{s.value}</p>
-            <p className="mt-3 text-slate-400">{s.label}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
+/* ─── About ─────────────────────────────────────────────── */
 const About = () => (
-  <section id="about" className="py-20 md:py-28">
-    <div className="container">
-      <SectionTitle num="01">Обо мне</SectionTitle>
-      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 mt-14">
-        <h3 className="font-display font-bold text-navy text-3xl md:text-[40px] leading-tight tracking-tight">
-          Год занимаюсь веб-разработкой на фрилансе. Специализируюсь на доработке сайтов и создании интернет-магазинов.
-        </h3>
+  <section id="about" className="bg-[#111110] text-[#F7F6F3] py-24 md:py-36">
+    <div className="max-w-6xl mx-auto px-6">
+      <div className="grid lg:grid-cols-[1fr_auto] gap-16 items-end">
         <div>
-          <p className="text-lg text-slate-500 leading-relaxed">
-            За это время выполнил более 50 заказов — от небольших правок вёрстки до запуска многостраничных сайтов и интернет-магазинов «под ключ». Работаю аккуратно, в срок и так, чтобы результат было удобно поддерживать дальше.
+          <p className="font-mono text-xs tracking-[0.2em] text-[#8A8882] uppercase mb-8">Обо мне</p>
+          <h2 className="font-display font-black leading-tight tracking-tight text-[#F7F6F3]"
+              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
+            Год занимаюсь<br />
+            веб-разработкой на фрилансе.<br />
+            <span className="text-[#9EF01A]">Специализируюсь</span> на<br />
+            сайтах и интернет-магазинах.
+          </h2>
+        </div>
+        <div className="lg:max-w-xs">
+          <p className="text-[#8A8882] leading-relaxed mb-8">
+            Выполнил более 50 заказов — от небольших правок вёрстки до запуска многостраничных проектов «под ключ». Работаю аккуратно и в срок.
           </p>
-          <p className="mt-8 font-mono text-xs tracking-[0.2em] text-slate-400 uppercase">Где я работаю</p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            {['Kwork', 'Профи.ру', 'Upwork', 'Постоянные клиенты'].map((p) => (
-              <span key={p} className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-4 py-2 text-sm font-medium text-navy shadow-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand" />{p}
-              </span>
+          <p className="font-mono text-[10px] tracking-[0.2em] text-[#555] uppercase mb-4">Где я работаю</p>
+          <div className="flex flex-wrap gap-2">
+            {['Kwork', 'Профи.ру', 'Upwork', 'Постоянные клиенты'].map(p => (
+              <span key={p} className="border border-[#333] rounded-full px-4 py-1.5 text-xs font-medium text-[#8A8882]">{p}</span>
             ))}
           </div>
         </div>
       </div>
-    </div>
-  </section>
-);
 
-const Stack = () => (
-  <section id="stack" className="py-20 md:py-28 bg-white">
-    <div className="container">
-      <SectionTitle num="02">Стек технологий</SectionTitle>
-      <div className="grid md:grid-cols-3 gap-6 mt-14">
-        {STACK.map((s) => (
-          <div key={s.title} className="bg-slate-50/70 border border-slate-200 rounded-2xl p-7 hover-lift">
-            <p className="font-mono text-sm text-brand">{s.tag}</p>
-            <h3 className="font-display font-bold text-navy text-xl mt-3">{s.title}</h3>
-            <div className="mt-5 flex flex-wrap gap-2.5">
-              {s.items.map((i) => (
-                <span key={i} className="bg-white border border-slate-200 rounded-lg px-3.5 py-2 text-sm font-medium text-navy">{i}</span>
-              ))}
-            </div>
-          </div>
-        ))}
+      <div className="mt-20 pt-10 border-t border-[#222]">
+        <p className="font-mono text-[10px] tracking-[0.2em] text-[#555] uppercase mb-6">Стек</p>
+        <div className="flex flex-wrap gap-3">
+          {STACK_ITEMS.map(s => (
+            <span key={s} className="bg-[#1C1C1B] border border-[#2A2A28] text-[#8A8882] rounded-lg px-4 py-2 text-sm font-medium hover:border-[#9EF01A] hover:text-[#9EF01A] transition-colors cursor-default">{s}</span>
+          ))}
+        </div>
       </div>
     </div>
   </section>
 );
 
+/* ─── Portfolio ─────────────────────────────────────────── */
 const Portfolio = () => (
-  <section id="portfolio" className="py-20 md:py-28">
-    <div className="container">
-      <SectionTitle num="03">Портфолио</SectionTitle>
-      <div className="grid md:grid-cols-2 gap-7 mt-14">
-        {PROJECTS.map((p) => (
-          <div key={p.name} className="group bg-white border border-slate-200 rounded-3xl overflow-hidden hover-lift shadow-sm">
+  <section id="portfolio" className="py-24 md:py-36">
+    <div className="max-w-6xl mx-auto px-6">
+      <div className="flex items-end justify-between mb-14 gap-6 flex-wrap">
+        <h2 className="font-display font-black text-[#111110] tracking-tight" style={{ fontSize: 'clamp(2.5rem,6vw,5rem)' }}>
+          Работы
+        </h2>
+        <p className="text-[#8A8882] text-sm max-w-xs leading-relaxed">
+          Отобрал несколько проектов, которые лучше всего отражают подход к работе
+        </p>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-5">
+        {PROJECTS.map(p => (
+          <div key={p.num} className={`group ${p.span} bg-[#EEECEA] rounded-3xl overflow-hidden flex flex-col hover:bg-[#E5E3DF] transition-colors`}>
             <div className="overflow-hidden">
-              <img src={p.img} alt={p.name} className="w-full h-60 object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+              <img src={p.img} alt={p.name} className="w-full h-56 object-cover object-top group-hover:scale-105 transition-transform duration-700" />
             </div>
-            <div className="p-7">
-              <p className="font-mono text-xs tracking-[0.15em] text-brand uppercase">{p.cat}</p>
-              <h3 className="font-display font-bold text-navy text-2xl mt-3">{p.name}</h3>
-              <p className="font-mono text-sm text-slate-400 mt-1.5 flex items-center gap-1">{p.url} <Icon name="ArrowUpRight" size={14} /></p>
+            <div className="p-7 flex flex-col flex-1">
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div>
+                  <p className="font-mono text-[10px] tracking-[0.2em] text-[#8A8882] uppercase">{p.cat}</p>
+                  <h3 className="font-display font-bold text-[#111110] text-xl mt-1">{p.name}</h3>
+                </div>
+                <span className="font-mono text-xs text-[#8A8882] shrink-0">{p.num}</span>
+              </div>
+              <p className="text-sm text-[#8A8882] leading-relaxed flex-1">{p.desc}</p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {p.tags.map((t) => (
-                  <span key={t} className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-navy">{t}</span>
+                {p.tags.map(t => (
+                  <span key={t} className="bg-white border border-[#111110]/10 rounded-lg px-3 py-1 text-xs font-medium text-[#111110]">{t}</span>
                 ))}
               </div>
-              <a href="#contacts" className="mt-6 inline-flex items-center gap-2 font-semibold text-navy group-hover:text-brand transition-colors">
-                Открыть сайт <Icon name="ArrowRight" size={16} className="group-hover:translate-x-1 transition-transform" />
+              <a href="#contacts" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#111110] group-hover:gap-3 transition-all">
+                Подробнее <Icon name="ArrowRight" size={15} />
               </a>
             </div>
           </div>
@@ -240,18 +256,22 @@ const Portfolio = () => (
   </section>
 );
 
+/* ─── Services ──────────────────────────────────────────── */
 const Services = () => (
-  <section id="services" className="py-20 md:py-28 bg-white">
-    <div className="container">
-      <SectionTitle num="04">Услуги</SectionTitle>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-14">
-        {SERVICES.map((s) => (
-          <div key={s.title} className="bg-slate-50/70 border border-slate-200 rounded-2xl p-7 hover-lift">
-            <span className="grid place-items-center w-12 h-12 rounded-xl bg-navy text-white">
-              <Icon name={s.icon} size={22} />
+  <section id="services" className="bg-[#EEECEA] py-24 md:py-36">
+    <div className="max-w-6xl mx-auto px-6">
+      <h2 className="font-display font-black text-[#111110] tracking-tight mb-16" style={{ fontSize: 'clamp(2.5rem,6vw,5rem)' }}>
+        Что делаю
+      </h2>
+      <div className="divide-y divide-[#111110]/10">
+        {SERVICES.map(s => (
+          <div key={s.num} className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 py-8 hover:pl-2 transition-all duration-300">
+            <span className="font-mono text-xs text-[#8A8882] shrink-0 w-8">{s.num}</span>
+            <h3 className="font-display font-bold text-[#111110] text-2xl md:text-3xl tracking-tight flex-1">{s.title}</h3>
+            <p className="text-[#8A8882] text-sm leading-relaxed sm:max-w-xs">{s.desc}</p>
+            <span className="hidden sm:grid place-items-center w-10 h-10 rounded-full border border-[#111110]/20 group-hover:bg-[#9EF01A] group-hover:border-transparent transition-colors shrink-0">
+              <Icon name="ArrowRight" size={16} />
             </span>
-            <h3 className="font-display font-bold text-navy text-lg mt-5">{s.title}</h3>
-            <p className="mt-2 text-slate-500 leading-relaxed text-[15px]">{s.desc}</p>
           </div>
         ))}
       </div>
@@ -259,134 +279,140 @@ const Services = () => (
   </section>
 );
 
-const Advantages = () => (
-  <section className="py-20 md:py-28">
-    <div className="container">
-      <SectionTitle num="05">Преимущества</SectionTitle>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-14">
-        {ADVANTAGES.map((a) => (
-          <div key={a.title} className="flex gap-4">
-            <span className="shrink-0 grid place-items-center w-11 h-11 rounded-xl bg-brand/10 text-brand">
-              <Icon name={a.icon} size={20} />
-            </span>
-            <div>
-              <h3 className="font-display font-bold text-navy text-lg">{a.title}</h3>
-              <p className="mt-1.5 text-slate-500 leading-relaxed text-[15px]">{a.desc}</p>
+/* ─── Contacts ──────────────────────────────────────────── */
+const Contacts = () => {
+  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const handle = (e: React.FormEvent) => { e.preventDefault(); setSent(true); };
+
+  return (
+    <section id="contacts" className="py-24 md:py-36">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
+          <div>
+            <h2 className="font-display font-black text-[#111110] tracking-tight mb-8" style={{ fontSize: 'clamp(2.5rem,6vw,4.5rem)' }}>
+              Есть задача?<br />
+              <span className="text-[#9EF01A]">Давай</span><br />
+              обсудим.
+            </h2>
+            <p className="text-[#8A8882] text-lg leading-relaxed mb-10 max-w-sm">
+              Расскажите о проекте — отвечу в течение дня и предложу решение.
+            </p>
+            <div className="space-y-4">
+              <a href="https://t.me/hakuz0r" target="_blank" rel="noreferrer"
+                 className="group flex items-center gap-4 border border-[#111110]/12 rounded-2xl px-6 py-4 hover:border-[#111110] transition-colors">
+                <span className="grid place-items-center w-10 h-10 rounded-full bg-[#EEECEA] group-hover:bg-[#9EF01A] transition-colors">
+                  <Icon name="Send" size={18} />
+                </span>
+                <div>
+                  <p className="font-semibold text-[#111110] text-sm">Telegram</p>
+                  <p className="text-[#8A8882] text-sm font-mono">@hakuz0r</p>
+                </div>
+                <Icon name="ArrowUpRight" size={16} className="ml-auto text-[#8A8882]" />
+              </a>
+              <a href="https://wa.me/79000000000" target="_blank" rel="noreferrer"
+                 className="group flex items-center gap-4 border border-[#111110]/12 rounded-2xl px-6 py-4 hover:border-[#111110] transition-colors">
+                <span className="grid place-items-center w-10 h-10 rounded-full bg-[#EEECEA] group-hover:bg-[#9EF01A] transition-colors">
+                  <Icon name="MessageCircle" size={18} />
+                </span>
+                <div>
+                  <p className="font-semibold text-[#111110] text-sm">WhatsApp</p>
+                  <p className="text-[#8A8882] text-sm font-mono">+7 900 000-00-00</p>
+                </div>
+                <Icon name="ArrowUpRight" size={16} className="ml-auto text-[#8A8882]" />
+              </a>
+              <a href="mailto:hakuz0r@gmail.com"
+                 className="group flex items-center gap-4 border border-[#111110]/12 rounded-2xl px-6 py-4 hover:border-[#111110] transition-colors">
+                <span className="grid place-items-center w-10 h-10 rounded-full bg-[#EEECEA] group-hover:bg-[#9EF01A] transition-colors">
+                  <Icon name="Mail" size={18} />
+                </span>
+                <div>
+                  <p className="font-semibold text-[#111110] text-sm">Email</p>
+                  <p className="text-[#8A8882] text-sm font-mono">hakuz0r@gmail.com</p>
+                </div>
+                <Icon name="ArrowUpRight" size={16} className="ml-auto text-[#8A8882]" />
+              </a>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
 
-const Reviews = () => (
-  <section className="py-20 md:py-28 bg-white">
-    <div className="container">
-      <SectionTitle num="06">Отзывы</SectionTitle>
-      <div className="grid md:grid-cols-3 gap-6 mt-14">
-        {REVIEWS.map((r) => (
-          <div key={r.name} className="bg-slate-50/70 border border-slate-200 rounded-2xl p-7 hover-lift">
-            <div className="flex gap-1 text-amber-400">
-              {Array.from({ length: 5 }).map((_, i) => <Icon key={i} name="Star" size={16} fallback="Star" />)}
+          {sent ? (
+            <div className="flex flex-col items-center justify-center gap-4 bg-[#EEECEA] rounded-3xl p-12 text-center min-h-80">
+              <span className="grid place-items-center w-16 h-16 rounded-full bg-[#9EF01A]">
+                <Icon name="Check" size={28} />
+              </span>
+              <h3 className="font-display font-bold text-[#111110] text-2xl">Отправлено!</h3>
+              <p className="text-[#8A8882]">Отвечу в течение дня.</p>
             </div>
-            <p className="mt-5 text-navy leading-relaxed">«{r.text}»</p>
-            <div className="mt-6 flex items-center gap-3">
-              <span className="grid place-items-center w-10 h-10 rounded-full bg-navy text-white font-display font-bold text-sm">{r.name[0]}</span>
+          ) : (
+            <form onSubmit={handle} className="space-y-4">
               <div>
-                <p className="font-display font-bold text-navy text-sm">{r.name}</p>
-                <p className="text-slate-400 text-sm">{r.role}</p>
+                <label className="block text-xs font-mono tracking-widest text-[#8A8882] uppercase mb-2">Имя</label>
+                <input type="text" required placeholder="Как к вам обращаться"
+                  value={form.name} onChange={e => setForm({...form, name: e.target.value})}
+                  className="w-full bg-[#EEECEA] border border-transparent rounded-xl px-5 py-4 text-[#111110] placeholder:text-[#8A8882] focus:outline-none focus:border-[#111110] transition-colors" />
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
-const Contacts = () => (
-  <section id="contacts" className="bg-navy-deep text-white py-20 md:py-28">
-    <div className="container">
-      <SectionTitle num="07" light>Контакты</SectionTitle>
-      <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 mt-14">
-        <div>
-          <h3 className="font-display font-bold text-3xl md:text-[40px] leading-tight">
-            Расскажите о задаче — <span className="text-slate-400">отвечу в течение дня.</span>
-          </h3>
-          <p className="mt-5 text-slate-400 text-lg leading-relaxed max-w-md">
-            Доработка, новый сайт или интернет-магазин — напишите удобным способом, обсудим детали и сроки.
-          </p>
-          <div className="mt-9 space-y-4">
-            <a href="https://t.me/hakuz0r" target="_blank" rel="noreferrer" className="flex items-center gap-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl px-5 py-4 transition-colors">
-              <span className="grid place-items-center w-11 h-11 rounded-xl bg-white/10"><Icon name="Send" size={20} /></span>
-              <div><p className="text-slate-400 text-sm">Telegram</p><p className="font-display font-bold">@hakuz0r</p></div>
-            </a>
-            <a href="https://wa.me/79000000000" target="_blank" rel="noreferrer" className="flex items-center gap-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl px-5 py-4 transition-colors">
-              <span className="grid place-items-center w-11 h-11 rounded-xl bg-white/10"><Icon name="MessageCircle" size={20} /></span>
-              <div><p className="text-slate-400 text-sm">WhatsApp</p><p className="font-display font-bold">+7 900 000-00-00</p></div>
-            </a>
-            <a href="mailto:hakuz0r@gmail.com" className="flex items-center gap-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl px-5 py-4 transition-colors">
-              <span className="grid place-items-center w-11 h-11 rounded-xl bg-white/10"><Icon name="Mail" size={20} /></span>
-              <div><p className="text-slate-400 text-sm">Email</p><p className="font-display font-bold">hakuz0r@gmail.com</p></div>
-            </a>
-          </div>
+              <div>
+                <label className="block text-xs font-mono tracking-widest text-[#8A8882] uppercase mb-2">Email</label>
+                <input type="email" required placeholder="you@mail.com"
+                  value={form.email} onChange={e => setForm({...form, email: e.target.value})}
+                  className="w-full bg-[#EEECEA] border border-transparent rounded-xl px-5 py-4 text-[#111110] placeholder:text-[#8A8882] focus:outline-none focus:border-[#111110] transition-colors" />
+              </div>
+              <div>
+                <label className="block text-xs font-mono tracking-widest text-[#8A8882] uppercase mb-2">Задача</label>
+                <textarea rows={5} required placeholder="Опишите проект — тип сайта, что нужно сделать, сроки"
+                  value={form.message} onChange={e => setForm({...form, message: e.target.value})}
+                  className="w-full bg-[#EEECEA] border border-transparent rounded-xl px-5 py-4 text-[#111110] placeholder:text-[#8A8882] focus:outline-none focus:border-[#111110] transition-colors resize-none" />
+              </div>
+              <button type="submit"
+                className="group w-full flex items-center justify-center gap-2 bg-[#111110] hover:bg-[#222] text-[#F7F6F3] font-bold py-4 rounded-xl transition-colors">
+                Отправить <Icon name="ArrowRight" size={18} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </form>
+          )}
         </div>
-        <form onSubmit={(e) => e.preventDefault()} className="bg-white/5 border border-white/10 rounded-3xl p-7 sm:p-9">
-          <label className="block">
-            <span className="font-semibold">Имя</span>
-            <input type="text" placeholder="Как к вам обращаться" className="mt-2 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder:text-slate-500 focus:outline-none focus:border-brand transition-colors" />
-          </label>
-          <label className="block mt-5">
-            <span className="font-semibold">Email</span>
-            <input type="email" placeholder="you@mail.com" className="mt-2 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder:text-slate-500 focus:outline-none focus:border-brand transition-colors" />
-          </label>
-          <label className="block mt-5">
-            <span className="font-semibold">Сообщение</span>
-            <textarea rows={4} placeholder="Опишите задачу в двух словах" className="mt-2 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder:text-slate-500 focus:outline-none focus:border-brand transition-colors resize-none" />
-          </label>
-          <button type="submit" className="group mt-7 w-full inline-flex items-center justify-center gap-2 bg-brand hover:bg-blue-600 font-bold py-4 rounded-xl transition-colors">
-            Отправить заявку <Icon name="ArrowRight" size={18} className="group-hover:translate-x-1 transition-transform" />
-          </button>
-        </form>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
+/* ─── Footer ────────────────────────────────────────────── */
 const Footer = () => (
-  <footer className="bg-navy text-white py-10">
-    <div className="container flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div className="flex items-center gap-3">
-        <span className="grid place-items-center w-9 h-9 rounded-xl bg-white/10 font-display font-bold text-sm">АЗ</span>
-        <span className="font-display font-bold">Артём Зубов</span>
-      </div>
-      <p className="text-slate-400 text-sm">© 2026 · Веб-разработка и дизайн</p>
-      <div className="flex items-center gap-3">
-        <a href="https://t.me/hakuz0r" className="grid place-items-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"><Icon name="Send" size={16} /></a>
-        <a href="https://wa.me/79000000000" className="grid place-items-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"><Icon name="MessageCircle" size={16} /></a>
-        <a href="mailto:hakuz0r@gmail.com" className="grid place-items-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"><Icon name="Mail" size={16} /></a>
+  <footer className="border-t border-[#111110]/10 py-8">
+    <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <a href="#top" className="font-display font-black text-sm text-[#111110] tracking-tight">
+        АЗ<span className="text-[#9EF01A]">.</span>
+      </a>
+      <p className="font-mono text-xs text-[#8A8882]">© 2026 Артём Зубов</p>
+      <div className="flex gap-2">
+        {[
+          { href: 'https://t.me/hakuz0r', icon: 'Send' },
+          { href: 'https://wa.me/79000000000', icon: 'MessageCircle' },
+          { href: 'mailto:hakuz0r@gmail.com', icon: 'Mail' },
+        ].map(s => (
+          <a key={s.icon} href={s.href} target="_blank" rel="noreferrer"
+             className="grid place-items-center w-9 h-9 rounded-lg border border-[#111110]/12 hover:border-[#111110] text-[#111110] transition-colors">
+            <Icon name={s.icon} size={16} />
+          </a>
+        ))}
       </div>
     </div>
   </footer>
 );
 
-const Index = () => (
-  <div className="min-h-screen bg-slate-50 selection:bg-navy selection:text-white">
-    <Header />
-    <main>
-      <Hero />
-      <Stats />
-      <About />
-      <Stack />
-      <Portfolio />
-      <Services />
-      <Advantages />
-      <Reviews />
-      <Contacts />
-    </main>
-    <Footer />
-  </div>
-);
-
-export default Index;
+/* ─── Page ──────────────────────────────────────────────── */
+export default function Index() {
+  return (
+    <div className="min-h-screen bg-[#F7F6F3]">
+      <Cursor />
+      <Header />
+      <main>
+        <Hero />
+        <About />
+        <Portfolio />
+        <Services />
+        <Contacts />
+      </main>
+      <Footer />
+    </div>
+  );
+}

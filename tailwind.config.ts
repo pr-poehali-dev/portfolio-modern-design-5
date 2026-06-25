@@ -19,9 +19,9 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				display: ['Montserrat', 'sans-serif'],
-				sans: ['IBM Plex Sans', 'sans-serif'],
-				mono: ['IBM Plex Mono', 'monospace'],
+				display: ['Unbounded', 'sans-serif'],
+				sans: ['Golos Text', 'sans-serif'],
+				mono: ['JetBrains Mono', 'monospace'],
 			},
 			colors: {
 				navy: {
