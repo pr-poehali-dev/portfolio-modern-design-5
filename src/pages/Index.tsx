@@ -86,7 +86,7 @@ const Header = () => {
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#F7F6F3]/95 backdrop-blur-sm border-b border-[#111110]/8' : ''}`}>
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
         <a href="#top" className="font-display text-sm font-bold tracking-tight text-[#111110]">
-          АЗ<span className="text-[#9EF01A]">.</span>
+          ДИ<span className="text-[#9EF01A]">.</span>
         </a>
         <nav className="hidden md:flex items-center gap-9">
           {NAV.map(n => (
@@ -124,25 +124,32 @@ const Hero = () => (
         </p>
         <div className="flex gap-8 text-right fade-up stagger-2">
           <div>
-            <p className="font-display text-3xl font-bold text-[#111110]">50+</p>
+            <p className="font-display text-3xl font-bold text-[#111110]">10+</p>
             <p className="text-xs text-[#8A8882] mt-0.5">заказов</p>
           </div>
           <div>
-            <p className="font-display text-3xl font-bold text-[#111110]">1</p>
-            <p className="text-xs text-[#8A8882] mt-0.5">год опыта</p>
-          </div>
-          <div>
-            <p className="font-display text-3xl font-bold text-[#111110]">4</p>
-            <p className="text-xs text-[#8A8882] mt-0.5">площадки</p>
+            <p className="font-display text-3xl font-bold text-[#111110]">0.5</p>
+            <p className="text-xs text-[#8A8882] mt-0.5">года опыта</p>
           </div>
         </div>
       </div>
 
-      <h1 className="font-display font-black text-[#111110] leading-none tracking-tighter fade-up stagger-2"
-          style={{ fontSize: 'clamp(3.5rem, 12vw, 10rem)' }}>
-        Артём<br />
-        <span className="text-[#EEECEA] [-webkit-text-stroke:2px_#111110]">Зубов</span>
-      </h1>
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 fade-up stagger-2">
+        <h1 className="font-display font-black text-[#111110] leading-none tracking-tighter"
+            style={{ fontSize: 'clamp(3.5rem, 10vw, 9rem)' }}>
+          Даниил<br />
+          <span className="text-[#EEECEA] [-webkit-text-stroke:2px_#111110]">Исаков</span>
+        </h1>
+        {/* Фото */}
+        <div className="shrink-0 fade-up stagger-3">
+          <div className="relative w-48 h-60 lg:w-56 lg:h-72 rounded-3xl overflow-hidden bg-[#EEECEA] border-2 border-dashed border-[#111110]/20 flex flex-col items-center justify-center gap-3 group cursor-pointer">
+            <Icon name="Camera" size={28} className="text-[#8A8882]" />
+            <p className="font-mono text-[10px] text-[#8A8882] tracking-widest uppercase text-center px-4">Добавить фото</p>
+            <div className="absolute inset-0 bg-[#9EF01A]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          <p className="font-mono text-[10px] text-[#8A8882] mt-2 text-center tracking-wide">↑ скажи мне ссылку на фото</p>
+        </div>
+      </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8 mt-14 fade-up stagger-3">
         <p className="max-w-sm text-lg text-[#8A8882] leading-relaxed">
@@ -181,22 +188,16 @@ const About = () => (
           <p className="font-mono text-xs tracking-[0.2em] text-[#8A8882] uppercase mb-8">Обо мне</p>
           <h2 className="font-display font-black leading-tight tracking-tight text-[#F7F6F3]"
               style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
-            Год занимаюсь<br />
+            Полгода занимаюсь<br />
             веб-разработкой на фрилансе.<br />
             <span className="text-[#9EF01A]">Специализируюсь</span> на<br />
             сайтах и интернет-магазинах.
           </h2>
         </div>
         <div className="lg:max-w-xs">
-          <p className="text-[#8A8882] leading-relaxed mb-8">
-            Выполнил более 50 заказов — от небольших правок вёрстки до запуска многостраничных проектов «под ключ». Работаю аккуратно и в срок.
+          <p className="text-[#8A8882] leading-relaxed">
+            Выполнил более 10 заказов — от небольших правок вёрстки до запуска полноценных сайтов «под ключ». Работаю аккуратно, в срок и так, чтобы результат было удобно поддерживать дальше.
           </p>
-          <p className="font-mono text-[10px] tracking-[0.2em] text-[#555] uppercase mb-4">Где я работаю</p>
-          <div className="flex flex-wrap gap-2">
-            {['Kwork', 'Профи.ру', 'Upwork', 'Постоянные клиенты'].map(p => (
-              <span key={p} className="border border-[#333] rounded-full px-4 py-1.5 text-xs font-medium text-[#8A8882]">{p}</span>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -299,36 +300,25 @@ const Contacts = () => {
               Расскажите о проекте — отвечу в течение дня и предложу решение.
             </p>
             <div className="space-y-4">
-              <a href="https://t.me/hakuz0r" target="_blank" rel="noreferrer"
+              <a href="https://t.me/itannsi" target="_blank" rel="noreferrer"
                  className="group flex items-center gap-4 border border-[#111110]/12 rounded-2xl px-6 py-4 hover:border-[#111110] transition-colors">
                 <span className="grid place-items-center w-10 h-10 rounded-full bg-[#EEECEA] group-hover:bg-[#9EF01A] transition-colors">
                   <Icon name="Send" size={18} />
                 </span>
                 <div>
                   <p className="font-semibold text-[#111110] text-sm">Telegram</p>
-                  <p className="text-[#8A8882] text-sm font-mono">@hakuz0r</p>
+                  <p className="text-[#8A8882] text-sm font-mono">@itannsi</p>
                 </div>
                 <Icon name="ArrowUpRight" size={16} className="ml-auto text-[#8A8882]" />
               </a>
-              <a href="https://wa.me/79000000000" target="_blank" rel="noreferrer"
+              <a href="tel:+79021697067"
                  className="group flex items-center gap-4 border border-[#111110]/12 rounded-2xl px-6 py-4 hover:border-[#111110] transition-colors">
                 <span className="grid place-items-center w-10 h-10 rounded-full bg-[#EEECEA] group-hover:bg-[#9EF01A] transition-colors">
-                  <Icon name="MessageCircle" size={18} />
+                  <Icon name="Phone" size={18} />
                 </span>
                 <div>
-                  <p className="font-semibold text-[#111110] text-sm">WhatsApp</p>
-                  <p className="text-[#8A8882] text-sm font-mono">+7 900 000-00-00</p>
-                </div>
-                <Icon name="ArrowUpRight" size={16} className="ml-auto text-[#8A8882]" />
-              </a>
-              <a href="mailto:hakuz0r@gmail.com"
-                 className="group flex items-center gap-4 border border-[#111110]/12 rounded-2xl px-6 py-4 hover:border-[#111110] transition-colors">
-                <span className="grid place-items-center w-10 h-10 rounded-full bg-[#EEECEA] group-hover:bg-[#9EF01A] transition-colors">
-                  <Icon name="Mail" size={18} />
-                </span>
-                <div>
-                  <p className="font-semibold text-[#111110] text-sm">Email</p>
-                  <p className="text-[#8A8882] text-sm font-mono">hakuz0r@gmail.com</p>
+                  <p className="font-semibold text-[#111110] text-sm">Телефон</p>
+                  <p className="text-[#8A8882] text-sm font-mono">+7 902 169-70-67</p>
                 </div>
                 <Icon name="ArrowUpRight" size={16} className="ml-auto text-[#8A8882]" />
               </a>
@@ -380,14 +370,13 @@ const Footer = () => (
   <footer className="border-t border-[#111110]/10 py-8">
     <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <a href="#top" className="font-display font-black text-sm text-[#111110] tracking-tight">
-        АЗ<span className="text-[#9EF01A]">.</span>
+        ДИ<span className="text-[#9EF01A]">.</span>
       </a>
-      <p className="font-mono text-xs text-[#8A8882]">© 2026 Артём Зубов</p>
+      <p className="font-mono text-xs text-[#8A8882]">© 2026 Даниил Исаков</p>
       <div className="flex gap-2">
         {[
-          { href: 'https://t.me/hakuz0r', icon: 'Send' },
-          { href: 'https://wa.me/79000000000', icon: 'MessageCircle' },
-          { href: 'mailto:hakuz0r@gmail.com', icon: 'Mail' },
+          { href: 'https://t.me/itannsi', icon: 'Send' },
+          { href: 'tel:+79021697067', icon: 'Phone' },
         ].map(s => (
           <a key={s.icon} href={s.href} target="_blank" rel="noreferrer"
              className="grid place-items-center w-9 h-9 rounded-lg border border-[#111110]/12 hover:border-[#111110] text-[#111110] transition-colors">
